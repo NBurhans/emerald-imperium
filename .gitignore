@@ -1,0 +1,16 @@
+# Regenerable intermediates, deliberately not committed.
+# scores_raw.json is 122 MB, over GitHub's 100 MB hard limit; score.js
+# rebuilds it in about five minutes.
+scores_raw.json
+scores_v*.json
+scores_T*.json
+scoring_input*.json
+*.pkl
+*.b64
+node_modules/
+calc/
+__pycache__/
+.DS_Store
+
+# Community source workbooks: kept locally, not redistributed.
+sources/

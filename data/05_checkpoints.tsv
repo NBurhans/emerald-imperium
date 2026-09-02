@@ -1,0 +1,20 @@
+checkpoint	checkpoint_label	level_cap	cap_basis	anchor_trainers	n_anchors	n_roster_slots	roster_basis	pool_size	tms_available	items_available	roster_species
+1	01_Pre-Roxanne	15	measured	Hoenn Leaders:ROXANNE:1	1	4	anchor_fight	423	3	1	Gligar,Nosepass,Rhyhorn,Wooper-Paldea
+2	02_Pre-Rustboro-Rival	20	measured	Rivals:DAWN:16	1	30	anchor_fight	556	7	1	Buneary,Combusken,Crobat,Dragonair,Golbat,Gorebyss,Grovyle,Hattrem,Kubfu,Marshtomp,Metang,Noibat,Piplup,Rapidash-Galar,Sliggoo-Hisui,Whimsicott
+3	03_Pre-Brawly	25	measured	Hoenn Leaders:BRAWLY:13	1	5	anchor_fight	705	17	1	Gurdurr,Hariyama,Lycanroc-Dusk,Pikachu-Libre,Sandslash-Alola
+4	04_Pre-Aqua-Museum	30	measured	Team Aqua:BACK TO BACK:24;Team Aqua:GRUNT1:24	2	5	anchor_fight	869	20	1	Golisopod,Lokix,Palpitoad,Qwilfish,Qwilfish-Hisui
+5	05_Pre-Route110-Rival	32	measured	Rivals:WALLY:99	1	4	anchor_fight	883	38	1	Drednaw,Gardevoir,Kricketune,Skarmory
+6	06_Pre-Wattson	34	measured	Hoenn Leaders:WATTSON:26	1	5	anchor_fight	964	74	3	Dedenne,Kilowattrel,Luxray,Magneton,Vikavolt
+7	07_Pre-MtChimney-Magma	44	measured	Team Magma:MAXIE:25	1	6	anchor_fight	1211	90	7	Cacturne,Camerupt-Mega,Chi-Yu,Coalossal,Gigalith,Hawlucha
+8	08_Pre-Flannery	47	measured	Hoenn Leaders:FLANNERY:39	1	6	anchor_fight	1221	101	7	Infernape,Marowak-Alola,Ninetales,Rotom-Heat,Scovillain,Walking Wake
+9	09_Pre-TrickHouse	56	measured	NONE	0	46	trick_house_sheet_substituted	1257	135	7	Arbok,Ariados,Bastiodon,Beedrill-Mega,Bronzong,Butterfree,Claydol,Crustle,Drapion,Duraludon,Durant,Electrode-Hisui,Ferrothorn,Garbodor-Mega,Gengar,Gholdengo,Grafaiai,Iron Crown,Iron Moth,Iron Treads,Jumpluff,Kartana,Kingler,Kleavor,Leavanny,Magnezone,Masquerain,Naganadel,Nihilego,Parasect,Pheromosa,Qwilfish,Revavroom,Roserade,Samurott,Skarmory,Snorlax,Stakataka,Steelix-Mega,Tentacruel,Toedscruel,Toxicroak,Toxtricity-Amped,Trevenant,Weezing-Galar,Wo-Chien
+10	10_Pre-Norman	59	measured	Hoenn Leaders:NORMAN:51	1	6	anchor_fight	1259	135	7	Cyclizar,Iron Valiant,Obstagoon,Slaking,Ursaluna-Bloodmoon,Zoroark-Hisui
+11	11_Pre-Route119-Rival	64	measured	Team Aqua:GRUNT 2:37;Team Aqua:ADMIN MATT:37	2	6	anchor_fight	1266	145	8	Armaldo,Greninja-Bond,Iron Jugulis,Machamp-Mega,Ogerpon-Wellspring,Starmie
+12	12_Pre-Winona	68	measured	Hoenn Leaders:WINONA:63	1	6	anchor_fight	1272	149	11	Aggron,Altaria-Mega,Flygon,Frosmoth,Staraptor,Thundurus-Therian
+13	13_Pre-Dawn-Lilycove	71	measured	Rivals:DAWN:171	1	6	anchor_fight	1302	157	13	Chandelure,Empoleon,Iron Boulder,Lopunny,Meowscarada,Noivern
+14	14_Pre-Archie-AquaHideout	74	measured	Team Aqua:ARCHIE:62	1	6	anchor_fight	1302	157	13	Basculegion-M,Eelektross,Iron Bundle,Overqwil,Poliwrath,Sharpedo-Mega
+15	15_Pre-Tate-and-Liza	76	measured	Hoenn Leaders:TATE:75;Hoenn Leaders:LIZA:75	2	6	anchor_fight	1302	158	13	Alakazam-Mega,Espathra,Farigiraf,Iron Leaves,Kangaskhan,Tapu Lele-Tapu-Lele
+16	16_Pre-Seafloor-Cavern	80	measured	Team Aqua:ARCHIE:88;Team Magma:MAXIE:51	2	12	anchor_fight	1302	164	13	Cacturne,Camerupt-Mega,Chi-Yu,Eelektross,Golurk,Groudon-Primal,Hawlucha,Incineroar,Iron Bundle,Kyogre-Primal,Quaquaval,Sharpedo-Mega
+17	17_Pre-Juan	82	measured	Hoenn Leaders:JUAN:87	1	6	anchor_fight	1302	164	13	Diancie-Mega,Flutter Mane,Rapidash-Galar,Tapu Fini-Tapu-Fini,Tinkaton,Ursaluna
+18	18_Pre-Wally-VictoryRoad	84	measured	Victory Road:WALLY:0	1	6	anchor_fight	1308	170	14	Celesteela,Darmanitan-Standard,Gardevoir-Mega,Raging Bolt,Shaymin-Sky,Sneasler
+19	19_Pre-Champion	85	measured	Elite 4:ELITE FOUR SIDNEY:13;Elite 4:ELITE FOUR PHOEBE:38;Elite 4:ELITE FOUR GLACIA:63;Elite 4:ELITE FOUR DRAKE:1;Elite 4:ELITE FOUR CYNTHIA:88;Elite 4:CHAMPION WALLACE:101;Elite 4:CHAMPION STEVEN:101	7	36	anchor_fight	1311	174	14	Absol-Mega,Annihilape,Archaludon,Calyrex-Shadow,Charizard-Mega-Y,Cramorant,Darmanitan-Galar-Zen,Decidueye-Hisui,Delphox,Dialga-Primal,Dusknoir,Empoleon,Garchomp-Mega,Gouging Fire,Grimmsnarl,Heatran,Magearna,Metagross,Moltres-Galar,Munkidori,Naganadel,Ninetales,Okidogi,Overqwil,Palkia-Primal,Rayquaza-Mega,Reshiram,Roaring Moon,Salamence,Spiritomb,Suicune,Tauros-Paldea-Aqua,Volcanion,Xerneas-Neutral,Zamazenta-Crowned

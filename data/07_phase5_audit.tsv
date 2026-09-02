@@ -1,0 +1,47 @@
+area	check	result	severity	affected	effect	phase
+round-trip	01_species.tsv	1534 rows, 49 cols, ends with newline=True	—	0	pass	5
+round-trip	02_world.tsv	419 rows, 23 cols, ends with newline=True	—	0	pass	5
+round-trip	03_trainers.tsv	164 rows, 29 cols, ends with newline=True	—	0	pass	5
+round-trip	03_trainer_slots.tsv	678 rows, 25 cols, ends with newline=True	—	0	pass	5
+round-trip	04_valuation.tsv	1311 rows, 75 cols, ends with newline=True	—	0	pass	5
+round-trip	05_checkpoints.tsv	19 rows, 12 cols, ends with newline=True	—	0	pass	5
+round-trip	06_lineage.tsv	11908 rows, 10 cols, ends with newline=True	—	0	pass	5
+decode	04_valuation.sustain_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.sustain_kit_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.spread_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.value_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.floor_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.vorp_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.niche_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.offense_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.defense_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.speed_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.typing_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.utility_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.replacement_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	04_valuation.ceiling_item_by_checkpoint	1311 non-null, 0 malformed pairs, checkpoint-counts seen [1, 2, 7, 8, 9, 10]	—	0	pass	5
+decode	curve length == n_checkpoints_obtainable	0 mismatches of 1311	—	0	pass	5
+decode	curve starts at earliest_checkpoint	0 mismatches	—	0	pass	5
+decode	04_valuation.lineage_form_per_checkpoint (colon-escape aware)	0 malformed; 1113 distinct forms decode, including Type: Null	—	0	pass	5
+decode	01_species.levelup_moves (move:level)	0 malformed pairs	—	0	pass	5
+decode	01_species.tm_moves (id list)	0 malformed ids	—	0	pass	5
+P3 -> P1	roster species_id resolves to a Phase 1 row	678/678	—	0	pass	5
+P3 -> P1	roster moves resolve against the move table	2702/2702 refs, 0 distinct unresolved	—	0	pass	5
+P3 -> P1	roster abilities resolve	1 distinct unresolved	Unresolved	1	['As One (Spectrier)']	5
+P3 -> P2/P1	roster held items resolve against itemData	8 distinct unresolved	Unresolved	8	['Electric Memory', 'Fighting Memory', 'Flapplite', 'Hearthflame Mask', 'Heavy-Duty Boots', 'Terrain Extender', 'Weakness Policy', 'Wellspring Mask']	5
+P1 internal	evolution targets resolve to a species row	0 orphans	—	0	pass	5
+P1 internal	movepool move ids resolve	0 dangling ids	—	0	pass	5
+P1 internal	BST equals the sum of its parts	0 mismatches	—	0	pass	5
+P1 internal	base stats within 1-255	0 out of range	—	0	pass	5
+P1 internal	internal_index unique	0 duplicates	—	0	pass	5
+P4 -> P2	ceiling held item obtainable at that checkpoint	21015/21015 species-checkpoint pairs	—	0	pass	5
+P4 -> P2	n_tm_gated matches Phase 2 TM gates at that checkpoint	0 mismatches	—	0	pass	5
+P4 internal	earliest_level equals that checkpoint cap	0 mismatches	—	0	pass	5
+P4 internal	lineage forms all appear as valuation rows	1113 distinct forms, 0 not in the file	—	0	pass	5
+P4 internal	tier follows the stated thresholds (fragile rows excused)	0 violations	—	0	pass	5
+P4 internal	cant_miss follows its stated rule	0 violations	—	0	pass	5
+P4 internal	06_lineage adjusted == raw - dead_weight_penalty	0 mismatches	—	0	pass	5
+P4 v2	sustain kit delta is never negative	0 negative of 1311	—	0	the kit can only help; a negative value would mean the model is inconsistent	5
+P4 v2	species with no sustain kit score exactly zero on the axis	88/88	—	0	pass	5
+P4 v2	ceiling_spread is one of the two scored builds	['ceiling', 'ceilingD']	—	0	pass	5
+P4 v2	sustain kit delta vs BST (must not be a stat proxy)	r=0.561	—	0	raw sweep depth was 0.809 and was rejected for this reason	5

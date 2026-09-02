@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emerald Imperium — Species Survey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#12211D;--ground2:#192E28;--ground3:#0C1815;
+  --paper:#E8E2D2;--paper2:#DCD4C0;--ink:#16241F;
+  --brass:#B0873C;--brass-lt:#D8AC5C;--verd:#589B84;--oxide:#A85440;
+  --mute:#8A9A93;--line:rgba(232,226,210,.16);--line2:rgba(232,226,210,.3);
+  --serif:"Newsreader",Georgia,"Times New Roman",serif;
+  --sans:"Archivo","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--paper);font-family:var(--sans);font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.01em;margin:0}
+p{margin:0 0 .9em}
+a{color:var(--brass-lt);text-decoration:none}a:hover{text-decoration:underline}
+button,select,input{font:inherit;font-family:var(--sans)}
+button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--brass-lt);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+
+.mast{border-bottom:1px solid var(--line);background:radial-gradient(1000px 380px at 10% -10%,rgba(88,155,132,.16),transparent 60%),linear-gradient(180deg,var(--ground3),var(--ground))}
+.mast .wrap{padding:34px 20px 22px}
+.mast h1{font-size:clamp(34px,5.5vw,58px);line-height:1;max-width:16ch}
+.mast h1 em{font-style:italic;color:var(--brass-lt)}
+.mast .sub{color:#C9D3CE;max-width:64ch;margin:10px 0 18px;font-size:15px}
+.search{display:flex;gap:10px;align-items:center;max-width:720px}
+.search input{flex:1;background:var(--paper);color:var(--ink);border:0;border-radius:6px;padding:12px 16px;font-size:18px;font-family:var(--serif)}
+.search input::placeholder{color:#6E7873}
+nav{position:sticky;top:0;z-index:20;background:rgba(18,33,29,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:0 20px}
+nav button{background:none;border:0;border-bottom:2px solid transparent;color:var(--mute);padding:12px 12px;cursor:pointer;white-space:nowrap;font-size:15px}
+nav button[aria-current=page]{color:var(--paper);border-bottom-color:var(--brass)}
+main .wrap{padding:22px 20px 60px}
+
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.filters select{background:var(--ground2);color:var(--paper);border:1px solid var(--line2);border-radius:6px;padding:7px 10px}
+.filters label{display:flex;gap:6px;align-items:center;color:var(--mute)}
+.count{color:var(--mute);margin-left:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.spec{background:var(--ground2);border:1px solid var(--line);border-radius:8px;padding:12px 14px;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:start}
+.spec:hover{border-color:var(--line2)}
+.spec{grid-template-columns:56px 1fr auto}
+.spec .art{grid-row:1/4;width:56px;height:56px;image-rendering:pixelated;image-rendering:crisp-edges;object-fit:contain;background:var(--ground3);border-radius:6px}
+.spec .art.none{display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:22px;font-family:var(--serif)}
+.spec .tys,.spec svg{grid-column:2/-1}
+.spec .no{color:var(--mute);font-size:12px}
+.doss .hero{display:flex;gap:18px;align-items:flex-end}
+.doss .art{width:128px;height:128px;image-rendering:pixelated;image-rendering:crisp-edges;object-fit:contain;background:var(--ground3);border-radius:10px;border:1px solid var(--line);flex:none}
+.rostart{width:40px;height:40px;image-rendering:pixelated;vertical-align:middle;margin-right:6px;object-fit:contain}
+.spec .nm{font-family:var(--serif);font-size:22px;line-height:1.1}
+.spec .nm small{font-family:var(--sans);font-size:12px;color:var(--mute);margin-left:6px}
+.spec .tys{grid-column:1/-1;display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+.spec .mark{text-align:right}
+.spec .val{font-size:16px}
+.spec svg{grid-column:1/-1;width:100%;height:26px;margin-top:6px}
+.spec .cm{color:var(--brass-lt);font-weight:600}
+.ty{display:inline-block;padding:1px 8px;border-radius:3px;font-size:12px;font-weight:600;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.45)}
+.tier{display:inline-block;min-width:30px;text-align:center;border-radius:3px;padding:1px 6px;font-weight:700;font-size:13px;color:var(--ink)}
+.tier.Sp{background:var(--brass-lt)}.tier.S{background:var(--verd)}.tier.A{background:#8DB7C9}.tier.B{background:var(--paper2)}.tier.C{background:#9AA79F}.tier.D{background:#5E6C66;color:var(--paper)}.tier.F{background:#3C4944;color:var(--mute)}.tier.UNK{background:var(--ground3);color:var(--mute)}
+.tier.frag{outline:1px dashed var(--brass-lt);outline-offset:1px}
+
+/* dossier */
+.back{background:none;border:1px solid var(--line2);color:var(--paper);border-radius:6px;padding:6px 12px;cursor:pointer;margin-bottom:14px}
+.doss h2{font-size:clamp(34px,5vw,54px);line-height:1}
+.doss .lead{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:8px 0 4px;color:#C9D3CE}
+.doss .lead .big{font-size:22px;color:var(--paper)}
+.toggle{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--ground2);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:16px 0}
+.toggle label{color:var(--mute)}
+.toggle select{background:var(--ground3);color:var(--brass-lt);border:1px solid var(--brass);border-radius:6px;padding:6px 10px;font-weight:600}
+.toggle .arrows button{background:var(--ground3);border:1px solid var(--line2);color:var(--paper);border-radius:6px;padding:5px 10px;cursor:pointer}
+.toggle .note{color:var(--mute);font-size:13px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+h3{font-family:var(--sans);font-weight:600;font-size:13px;color:var(--mute);margin:20px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;margin:0}
+.kv dt{color:var(--mute)}.kv dd{margin:0}
+.stat{display:grid;grid-template-columns:38px 40px 1fr;gap:10px;align-items:center;margin:3px 0}
+.stat .bar{height:9px;background:var(--ground3);border-radius:3px;position:relative}
+.stat .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--mute)}
+.stat .bar i.hi{background:var(--verd)}.stat .bar i.lo{background:var(--oxide)}
+.mx{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.mx div{padding:4px 2px;text-align:center;border-radius:3px;font-size:12px;background:var(--ground3)}
+.mx .e0{color:#5a6a63}.mx .e25,.mx .e50{color:var(--verd)}.mx .e2{color:#E8A79A}.mx .e4{color:#F2B3A6;background:#3a2622}
+.curve{width:100%;height:120px;display:block}
+.mv{display:inline-block;padding:2px 8px;margin:2px 3px 2px 0;border-radius:3px;background:var(--ground3);font-size:13px;border-left:3px solid var(--line2)}
+.mv small{color:var(--mute);margin-left:5px}
+.mv.gated{opacity:.4}
+.mv.used{border:1px solid var(--brass-lt);border-left-width:3px;box-shadow:0 0 0 1px rgba(216,172,92,.35);background:rgba(216,172,92,.12)}
+.mv.used b{color:var(--brass-lt);margin-left:5px;font-size:11px}
+.mv.usedf{border:1px dashed var(--brass);border-left-width:3px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--mute);font-size:13px;margin:6px 0 2px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-1px;margin-right:5px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{color:var(--mute);font-weight:600;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line2);white-space:nowrap}
+th.n,td.n{text-align:right}
+td{padding:5px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+tr.clk{cursor:pointer}tr.clk:hover{background:var(--ground2)}
+.sig{width:100%;max-width:320px;height:auto;display:block}
+.note{color:var(--mute);font-size:13px}
+.warn{color:var(--brass-lt)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chip{padding:3px 10px;border:1px solid var(--line2);border-radius:14px;cursor:pointer;background:var(--ground2);font-size:13px}
+.chip[aria-pressed=true]{border-color:var(--brass);color:var(--brass-lt)}
+.band{margin:18px 0 6px;padding:5px 10px;border-radius:4px;font-weight:600;color:var(--ink);display:flex;justify-content:space-between}
+.party{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin:8px 0}
+.slot{border:1px dashed var(--line2);border-radius:6px;padding:10px;min-height:64px}
+.slot.filled{border-style:solid;background:var(--ground2)}
+.cov{display:grid;grid-template-columns:repeat(9,1fr);gap:3px}
+.cov div{text-align:center;padding:5px 0;border-radius:3px;font-size:12px;background:var(--ground3)}
+.ok{color:var(--verd)}.bad{color:#E8A79A}
+.empty{color:var(--mute);padding:40px 0;text-align:center;font-family:var(--serif);font-size:20px}
+.small{background:var(--ground3);border:1px solid var(--line2);color:var(--paper);border-radius:5px;padding:2px 8px;cursor:pointer;font-size:12px}
+</style>
+</head>
+<body>
+<header class="mast"><div class="wrap">
+  <h1>Emerald Imperium <em>species survey</em></h1>
+  <p class="sub">1,534 forms from the v1.3 ROM data, 1,311 scored against every boss across nineteen level caps. Open a species to see how it performs at the point you're at.</p>
+  <div class="search"><input id="q" type="search" placeholder="Search a name or dex number" autocomplete="off" aria-label="Search species"></div>
+</div></header>
+<nav><div class="wrap" id="tabs"></div></nav>
+<main><div class="wrap" id="main"><div class="empty" id="boot">Opening the survey…</div></div></main>
+
+<script src="emerald_imperium_sprites.js" onerror="window.EI_SPRITES_MISSING=true"></script>
+<script id="gz" type="text/plain">__DATA__</script>
+<script>
+'use strict';
+const TYPECOL={Normal:'#8a8a6a',Fighting:'#b3392b',Flying:'#8a7fd9',Poison:'#9a3f9c',Ground:'#d5b455',Rock:'#a89330',Bug:'#8fa41a',Ghost:'#5f4f8f',Steel:'#8f8fb0',Fire:'#e2652b',Water:'#4f7fe6',Grass:'#5fb24a',Electric:'#e6c02b',Psychic:'#e35a86',Ice:'#7fd0d0',Dragon:'#6a3fe6',Dark:'#5a4a3f',Fairy:'#e08fc0'};
+const ST=['HP','Atk','Def','SpA','SpD','Spe'];
+let D,SP,VAL,MV,TY,CH,CPS,TRS,NICHE,ITEM,TI,byIdx,byName;
+const S={tab:'dex',sel:null,cp:9,q:'',ftype:'',ftier:'',frole:'',favail:'',fcm:false,sort:'vorp',party:[],trainer:null,rankRole:'',roleTab:0,rankCp:19};
+// species field indexes
+const F={idx:0,name:1,form:2,ftype:3,stage:4,dex:5,t1:6,t2:7,st:8,ab:9,lvl:10,tm:11,from:12,into:13,av:14,flags:15};
+// valuation field indexes
+const K={t:0,v:1,vf:2,vo:3,roi:4,ic:5,n:6,nf:7,S:8,T:9,Y:10,n2:11,n2f:12,n3:13,n3f:14,ec:15,cv:16,cf:17,cvo:18,cn:19,ci:20,cnat:21,cab:22,fab:23,cevs:24,lv:25,ldw:26,sus:27,kit:28,depth:29,hasRec:30,hasScr:31,nHaz:32,heal:33,hazChip:34,csus:35,ckit:36,cspread:37,modal:38,cm:39,fr:40,ed:41,conf:42,ab:43,rmean:44,np:45};
+
+function fail(msg){document.getElementById('main').innerHTML=`<div class="empty" style="text-align:left;font-family:var(--sans);font-size:15px;max-width:640px"><b>The survey could not open.</b><br><br>${msg}<br><br>Open this file directly in Chrome, Safari, Firefox or Edge. If you see this inside an app preview, download the file and open it from your browser.</div>`;}
+async function boot(){
+  try{
+    if(!('DecompressionStream' in window))throw new Error('This browser is too old to decompress the embedded data (needs DecompressionStream, Chrome 80+, Safari 16.4+, Firefox 113+).');
+    const b64=document.getElementById('gz').textContent.trim();
+    const bin=Uint8Array.from(atob(b64),c=>c.charCodeAt(0));
+    const ds=new DecompressionStream('gzip');
+    const out=new Response(new Blob([bin]).stream().pipeThrough(ds));
+    D=JSON.parse(await out.text());
+  }catch(e){fail('Error: '+(e.message||e));throw e;}
+  SP=D.sp;VAL=D.val;MV=D.mv;TY=D.ty;CH=D.ch;CPS=D.cp;TRS=D.tr;NICHE=D.ni;ITEM=D.it;
+  TI=Object.fromEntries(TY.map((t,i)=>[t,i]));
+  byIdx=new Map(SP.map(s=>[s[0],s]));byName=new Map(SP.map(s=>[s[1],s]));
+  const nav=document.getElementById('tabs');
+  const TABS=[['dex','Dex'],['rank','Rankings'],['roles','Roles'],['boss','Bosses'],['party','Party'],['about','About']];
+  nav.innerHTML=TABS.map(([k,l])=>`<button data-t="${k}">${l}</button>`).join('');
+  nav.onclick=e=>{const b=e.target.closest('button');if(!b)return;S.tab=b.dataset.t;S.sel=null;render();};
+  document.getElementById('q').oninput=e=>{S.q=e.target.value;S.tab='dex';S.sel=null;render();};
+  render();
+}
+// ---------- helpers ----------
+const f4=x=>x==null?'—':(x/10000).toFixed(3);
+const sg=x=>x==null?'—':((x>=0?'+':'')+(x/10000).toFixed(3));
+const val=sp=>VAL[sp[0]];
+const at=(v,ki,cp)=>{if(!v)return null;const a=v[ki];const i=cp-v[K.ec];return i<0||i>=a.length?null:a[i];};
+const cap=cp=>CPS[cp-1][2];
+const cpName=cp=>CPS[cp-1][1];
+const nicheName=i=>i==null?'—':(NICHE[i]==='NONE'?'no role':NICHE[i].replace(/_/g,' '));
+const eff=(a,defT)=>defT.reduce((m,t)=>t?m*CH[TI[a]][TI[t]]:m,1);
+const types=sp=>[sp[F.t1],sp[F.t2]].filter(Boolean);
+const inPool=(sp,cp)=>{const v=val(sp);return v&&v[K.ec]<=cp;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tyTag=t=>t?`<span class="ty" style="background:${TYPECOL[t]||'#666'}">${t}</span>`:'';
+const tierCls=t=>t==='S+'?'Sp':t;
+const tierTag=v=>v?`<span class="tier ${tierCls(v[K.t])}${v[K.fr]?' frag':''}" title="${v[K.fr]?'within '+f4(v[K.ed])+' of a tier edge':''}">${v[K.t]}</span>`:'<span class="tier UNK">—</span>';
+const bst=sp=>sp[F.st].reduce((a,b)=>a+b);
+// The layer repeats the species name as a form suffix for a few Pokémon
+// ('Tapu Fini-Tapu-Fini', 'Kommo-o-Kommo-O'). Display without the echo.
+const disp=sp=>{const n=sp[F.name];const i=n.indexOf('-');if(i<0)return n;const a=n.slice(0,i),b=n.slice(i+1);return b.replace(/-/g,' ').toLowerCase()===a.toLowerCase()?a:n;};
+// Sprite cascade: (1) the companion file, keyed by internal_index; (2) PokeAPI's
+// national-dex sprite over the network, base form only; (3) a placeholder.
+const SPR=window.EI_SPRITES||null;
+function spriteSrc(sp){if(SPR&&SPR.m[sp[0]]!=null)return [SPR.u[SPR.m[sp[0]]],SPR.how[sp[0]]];if(sp[F.dex])return [`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${sp[F.dex]}.png`,'PokeAPI national-dex sprite (base form)'];return [null,'no sprite'];}
+function art(sp,cls){const [src,how]=spriteSrc(sp);if(!src)return `<div class="${cls} none" title="no sprite">?</div>`;return `<img class="${cls}" src="${src}" alt="" loading="lazy" title="${how}" onerror="this.outerHTML='<div class=\'${cls} none\'>?</div>'">`;}
+function spark(v,cp,w=100,h=26){if(!v)return'';const a=v[K.cv],x0=v[K.ec];let p='';for(let i=0;i<a.length;i++){p+=(i?'L':'M')+(((x0+i-1)/18)*w).toFixed(1)+','+(h-3-(a[i]/10000)*(h-6)).toFixed(1);}const nx=((cp-1)/18)*w;const y=at(v,K.cv,cp);return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path d="${p}" fill="none" stroke="#8A9A93" stroke-width="1.3"/><line x1="${nx}" x2="${nx}" y1="0" y2="${h}" stroke="#D8AC5C" stroke-width="1"/>${y!=null?`<circle cx="${nx}" cy="${(h-3-(y/10000)*(h-6)).toFixed(1)}" r="2.5" fill="#D8AC5C"/>`:''}</svg>`;}
+function curve(v,cp){const W=720,H=120,L=32,B=20;const x=c=>L+((c-1)/18)*(W-L-8),y=t=>H-B-(t/10000)*(H-B-8);let pc='',pf='';for(let i=0;i<v[K.cv].length;i++){const c=v[K.ec]+i;pc+=(i?'L':'M')+x(c)+','+y(v[K.cv][i]);pf+=(i?'L':'M')+x(c)+','+y(v[K.cf][i]);}let t='';for(let c=1;c<=19;c++)t+=`<text x="${x(c)}" y="${H-5}" font-size="10" fill="${c===cp?'#D8AC5C':'#5a6a63'}" text-anchor="middle">${c}</text>`;const g=[0,.5,1].map(q=>`<line x1="${L}" x2="${W-8}" y1="${y(q*10000)}" y2="${y(q*10000)}" stroke="rgba(232,226,210,.12)"/><text x="${L-4}" y="${y(q*10000)+3}" font-size="10" fill="#5a6a63" text-anchor="end">${q}</text>`).join('');return `<svg class="curve" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${g}<line x1="${x(cp)}" x2="${x(cp)}" y1="4" y2="${H-B}" stroke="#D8AC5C" stroke-dasharray="3 3"/><path d="${pf}" fill="none" stroke="#5E6C66" stroke-width="1.5"/><path d="${pc}" fill="none" stroke="#E8E2D2" stroke-width="2.2"/>${t}</svg>`;}
+function signature(sp){const s=sp[F.st],n=6,cx=100,cy=100,r=80;const pt=(i,k)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*r*k,cy+Math.sin(a)*r*k];};const ring=k=>'M'+Array.from({length:n},(_,i)=>pt(i,k).map(x=>x.toFixed(1)).join(',')).join('L')+'Z';const shape='M'+s.map((v,i)=>pt(i,Math.min(1,v/160)).map(x=>x.toFixed(1)).join(',')).join('L')+'Z';const lbl=ST.map((l,i)=>{const [x,y]=pt(i,1.18);return `<text x="${x}" y="${y+4}" font-size="11" fill="#8A9A93" text-anchor="middle">${l} ${s[i]}</text>`;}).join('');return `<svg class="sig" viewBox="-28 -12 256 224"><path d="${ring(1)}" fill="none" stroke="rgba(232,226,210,.14)"/><path d="${ring(.5)}" fill="none" stroke="rgba(232,226,210,.1)"/><path d="${shape}" fill="rgba(216,172,92,.28)" stroke="#D8AC5C" stroke-width="1.6"/>${lbl}</svg>`;}
+
+// ---------- render ----------
+function render(){
+  const nav=document.getElementById('tabs');[...nav.children].forEach(b=>b.setAttribute('aria-current',b.dataset.t===S.tab?'page':'false'));
+  const m=document.getElementById('main');
+  m.innerHTML=S.sel!=null?dossier():({dex:rDex,rank:rRank,roles:rRoles,boss:rBoss,party:rParty,about:rAbout})[S.tab]();
+  wire(m);window.scrollTo({top:S.sel!=null?0:window.scrollY});
+}
+function wire(root){
+  root.querySelectorAll('[data-sel]').forEach(el=>el.onclick=e=>{e.preventDefault();S.sel=+el.dataset.sel;render();window.scrollTo(0,0);});
+  root.querySelectorAll('[data-back]').forEach(el=>el.onclick=()=>{S.sel=null;render();});
+  root.querySelectorAll('[data-add]').forEach(el=>el.onclick=e=>{e.stopPropagation();const i=+el.dataset.add;S.party=S.party.includes(i)?S.party.filter(x=>x!==i):(S.party.length<6?[...S.party,i]:S.party);render();});
+  root.querySelectorAll('[data-role]').forEach(el=>el.onclick=()=>{S.rankRole=el.dataset.role;render();});
+  root.querySelectorAll('[data-roletab]').forEach(el=>el.onclick=()=>{S.roleTab=+el.dataset.roletab;render();});
+  root.querySelectorAll('[data-cp]').forEach(el=>el.onchange=()=>{S.cp=+el.value;render();});
+  root.querySelectorAll('[data-cpstep]').forEach(el=>el.onclick=()=>{S.cp=Math.max(1,Math.min(19,S.cp+ +el.dataset.cpstep));render();});
+  root.querySelectorAll('[data-tr]').forEach(el=>el.onchange=()=>{S.trainer=el.value||null;render();});
+  ['ftype','ftier','frole','favail','sort'].forEach(k=>{const el=root.querySelector('#'+k);if(el)el.onchange=()=>{S[k]=el.value;render();};});
+  const cm=root.querySelector('#fcm');if(cm)cm.onchange=()=>{S.fcm=cm.checked;render();};
+}
+function cpToggle(label){return `<div class="toggle"><label>${label}</label><span class="arrows"><button data-cpstep="-1" aria-label="earlier">‹</button></span><select data-cp>${CPS.map(c=>`<option value="${c[0]}" ${c[0]===S.cp?'selected':''}>${String(c[0]).padStart(2,'0')} ${c[1]} — cap ${c[2]}</option>`).join('')}</select><span class="arrows"><button data-cpstep="1" aria-label="later">›</button></span><span class="note">cap ${cap(S.cp)}, ${CPS[S.cp-1][4]} forms obtainable</span></div>`;}
+
+// ---------- DEX ----------
+function rDex(){
+  const q=S.q.trim().toLowerCase();
+  const roles=[...new Set(Object.values(VAL).map(v=>nicheName(v[K.n])))].filter(r=>r!=='no role').sort();
+  let rows=SP.filter(sp=>{const v=val(sp);
+    if(S.favail==='valued'&&!v)return false;if(S.favail==='now'&&!inPool(sp,S.cp))return false;
+    if(S.ftype&&sp[F.t1]!==S.ftype&&sp[F.t2]!==S.ftype)return false;
+    if(S.ftier&&(!v||v[K.t]!==S.ftier))return false;
+    if(S.frole&&(!v||nicheName(v[K.n])!==S.frole))return false;
+    if(S.fcm&&(!v||!v[K.cm]))return false;
+    if(q&&!(sp[F.name].toLowerCase().includes(q)||String(sp[F.dex])===q))return false;return true;});
+  rows.sort((a,b)=>{const va=val(a),vb=val(b);if(S.sort==='vorp')return (vb?vb[K.vo]:-1e9)-(va?va[K.vo]:-1e9);if(S.sort==='dex')return a[F.dex]-b[F.dex]||a[F.idx]-b[F.idx];if(S.sort==='bst')return bst(b)-bst(a);return a[F.name].localeCompare(b[F.name]);});
+  const cards=rows.slice(0,400).map(sp=>{const v=val(sp);return `<div class="spec" data-sel="${sp[0]}" tabindex="0">${art(sp,'art')}<span class="no">#${String(sp[F.dex]).padStart(3,'0')}${sp[F.form]&&sp[F.form]!==sp[F.name]?' · '+esc(sp[F.form]):''}${v&&v[K.cm]?' <span class="cm">can\'t miss</span>':''}</span><span class="mark">${tierTag(v)}</span><span class="nm">${disp(sp)}</span><span class="mark val">${v?f4(v[K.v]):'<span class="note">unscored</span>'}</span><span class="tys">${types(sp).map(tyTag).join('')}${v?`<span class="note" style="margin-left:auto">${nicheName(v[K.n])}${v[K.kit]>=3000?' · <span style="color:var(--verd)">stall</span>':''}</span>`:''}</span>${v?spark(v,S.cp):''}</div>`;}).join('');
+  return `<div class="filters">
+   <select id="ftype"><option value="">Any type</option>${TY.map(t=>`<option ${S.ftype===t?'selected':''}>${t}</option>`).join('')}</select>
+   <select id="ftier"><option value="">Any tier</option>${['S+','S','A','B','C','D','F'].map(t=>`<option ${S.ftier===t?'selected':''}>${t}</option>`).join('')}</select>
+   <select id="frole"><option value="">Any role</option>${roles.map(r=>`<option ${S.frole===r?'selected':''}>${r}</option>`).join('')}</select>
+   <select id="favail"><option value="">All forms</option><option value="valued" ${S.favail==='valued'?'selected':''}>Obtainable somewhere</option><option value="now" ${S.favail==='now'?'selected':''}>Obtainable by cap ${cap(S.cp)}</option></select>
+   <select id="sort"><option value="vorp" ${S.sort==='vorp'?'selected':''}>By VORP</option><option value="dex" ${S.sort==='dex'?'selected':''}>By dex</option><option value="bst" ${S.sort==='bst'?'selected':''}>By BST</option><option value="name" ${S.sort==='name'?'selected':''}>By name</option></select>
+   <label><input type="checkbox" id="fcm" ${S.fcm?'checked':''}>can't-miss</label>
+   <span class="count">${rows.length} forms${rows.length>400?', first 400 shown':''}</span></div>
+  <p class="note">The gold line on each curve marks the checkpoint you last set on a species page (${cpName(S.cp)}). Tier badges with a dashed edge sit within 0.002 of a threshold.</p>
+  <div class="grid">${cards||'<div class="empty">Nothing matches.</div>'}</div>`;
+}
+
+// ---------- DOSSIER ----------
+function lineage(sp){const out=new Set([sp[0]]);let ch=true;while(ch){ch=false;for(const s of SP){if(out.has(s[0]))continue;if(out.has(s[F.from])||s[F.into].some(e=>out.has(e[1]))){out.add(s[0]);ch=true;}}}return [...out].map(i=>byIdx.get(i)).filter(s=>s[F.ftype]!=='gigantamax'||s===sp).sort((a,b)=>a[F.stage]-b[F.stage]||a[F.idx]-b[F.idx]);}
+function evoHow(e){const [m,,p]=e;if(m==='EVO_LEVEL')return 'level '+p;if(m==='EVO_ITEM')return 'item '+(D.ei[p]||'#'+p);if(m.startsWith('EVO_FRIENDSHIP'))return 'friendship'+(m.endsWith('DAY')?' by day':m.endsWith('NIGHT')?' by night':'');if(m.startsWith('EVO_LEVEL_'))return 'level '+p+', '+m.slice(10).toLowerCase().replace(/_/g,' ');if(m==='EVO_MOVE')return 'knowing '+(MV[p]?MV[p][0]:'#'+p);if(/^\d+$/.test(m))return `<span class="warn">undecoded method ${m}</span>`;return m.replace('EVO_','').toLowerCase();}
+function dossier(){
+  const sp=byIdx.get(S.sel);if(!sp){S.sel=null;return rDex();}
+  const v=val(sp),cp=S.cp,lc=cap(cp),tys=types(sp);
+  const now=at(v,K.cv,cp),nowF=at(v,K.cf,cp),nowVo=at(v,K.cvo,cp),nowN=at(v,K.cn,cp),nowI=at(v,K.ci,cp);
+  const stats=ST.map((n,i)=>{const x=sp[F.st][i];return `<div class="stat"><span class="note">${n}</span><span class="n">${x}</span><div class="bar"><i class="${x>=110?'hi':x<60?'lo':''}" style="width:${Math.min(100,x/1.6)}%"></i></div></div>`;}).join('');
+  const mx=TY.map(t=>{const e=eff(t,tys);const c=e===0?'e0':e<.5?'e25':e<1?'e50':e>2?'e4':e>1?'e2':'';return `<div class="${c}" style="border-top:2px solid ${TYPECOL[t]}">${t.slice(0,3)}${e===1?'':' '+e}</div>`;}).join('');
+  const learned=sp[F.lvl].filter(([,l])=>l<=lc),later=sp[F.lvl].filter(([,l])=>l>lc);
+  // Moves the scorer actually leaned on at this checkpoint: for each boss slot it
+  // took the single best damaging move from the build's pool. Gold = the ceiling
+  // build used it, with how many slots it was the best answer to. Dashed = the
+  // zero-investment floor used it.
+  const pk=(D.pk[sp[0]]||{})[cp]||[[],[],[]];
+  const nSlots=(TRS.filter(tr=>CPS[cp-1][3].includes(tr[0])).reduce((a,tr)=>a+tr[6].length,0))||(cp===9?46:0);
+  const usedC=new Map(pk[0].map((m,i)=>[m,pk[1][i]])),usedF=new Set(pk[2]);
+  const chip=(id,extra,cls='')=>{const x=MV[id];if(!x)return '';const c=usedC.has(id)?' used':usedF.has(id)?' usedf':'';return `<span class="mv${c}${cls}" style="border-left-color:${TYPECOL[x[1]]}">${x[0]}<small>${x[2]==='-'?'—':x[3]}${extra}</small>${usedC.has(id)?`<b>best vs ${usedC.get(id)}/${nSlots}</b>`:''}</span>`;};
+  const legend=v?`<div class="legend"><span><i style="background:rgba(216,172,92,.4);border:1px solid var(--brass-lt)"></i>used by the ceiling build here, with how many of the ${nSlots} boss slots it was the best answer to</span><span><i style="border:1px dashed var(--brass)"></i>used by the zero-investment floor</span></div>`:'';
+  const tms=sp[F.tm].map(id=>[id,D.tm[id]??99]).sort((a,b)=>a[1]-b[1]);
+  const lin=lineage(sp).map(s=>s[0]===sp[0]?`<b>${s[F.name]}</b>`:`<a href="#" data-sel="${s[0]}">${s[F.name]}</a>`).join(' → ');
+  const from=byIdx.get(sp[F.from]);
+  const into=sp[F.into].map(e=>{const t=byIdx.get(e[1]);return t?`<a href="#" data-sel="${t[0]}">${t[F.name]}</a> <span class="note">(${evoHow(e)})</span>`:''}).filter(Boolean).join(', ');
+  const av=sp[F.av].map(a=>`<tr><td>${esc(a[0]||'')}</td><td>${esc(a[1]||'')}</td><td>${esc(a[2]||'')}</td><td>${esc(a[3]||'')}</td></tr>`).join('');
+  const fl=sp[F.flags];const flagsTxt=[fl&1?'starter':'',fl&2?'one-time':'',fl&4?'missable':''].filter(Boolean).join(' · ');
+  let analysis=`<p class="note">Not scored. No acquisition route resolves for this form (223 of 1,534 are in this state). The availability table below shows what the sources say.</p>`;
+  if(v){
+    const fits=[[v[K.n],v[K.nf]],[v[K.n2],v[K.n2f]],[v[K.n3],v[K.n3f]]].filter(x=>x[1]>0);
+    const rows=[];for(let c=v[K.ec];c<=19;c++){const i=c-v[K.ec];rows.push(`<tr ${c===cp?'style="color:var(--brass-lt)"':''}><td>${c}</td><td class="n">${cap(c)}</td><td>${nicheName(v[K.cn][i])}</td><td class="n">${f4(v[K.cf][i])}</td><td class="n">${f4(v[K.cv][i])}</td><td class="n">${sg(v[K.cvo][i])}</td><td>${ITEM[v[K.ci][i]]==='NONE'?'—':ITEM[v[K.ci][i]]}</td></tr>`);}
+    analysis=`
+    ${curve(v,cp)}<p class="note">White: ceiling value. Grey: floor. Gold: the checkpoint set above.</p>
+    <div class="cols">
+     <dl class="kv"><dt>At ${cpName(cp)}</dt><dd><b>${f4(now)}</b> ceiling · ${f4(nowF)} floor</dd><dt>VORP here</dt><dd><b>${sg(nowVo)}</b></dd><dt>Role here</dt><dd>${nicheName(nowN)}</dd><dt>Item here</dt><dd>${nowI==null||ITEM[nowI]==='NONE'?'none obtainable yet':ITEM[nowI]}</dd></dl>
+     <dl class="kv"><dt>Across the run</dt><dd>${f4(v[K.v])} ceiling · ${f4(v[K.vf])} floor</dd><dt>Mean VORP</dt><dd><b>${sg(v[K.vo])}</b> → tier ${v[K.t]}${v[K.fr]?` <span class="warn">fragile</span>`:''}</dd><dt>Spread here</dt><dd>${at(v,K.cspread,cp)?'defensive (252 HP + bulk)':'offensive (252 Atk/SpA + Spe)'}</dd><dt>ROI</dt><dd>${f4(v[K.roi])} <span class="note">over cost ${(v[K.ic]/10000).toFixed(1)}</span></dd><dt>Replacement</dt><dd>${f4(v[K.rmean])} <span class="note">mean, 3rd-best floor in role</span></dd></dl>
+    </div>
+    <h3>Sustain — can it stall this checkpoint?</h3>
+    <div class="cols">
+     <dl class="kv"><dt>Sweep depth</dt><dd><b>${v[K.depth]}</b> boss slots on one lifebar <span class="note">(the bar resets each trainer)</span></dd>
+      <dt>Sustain here</dt><dd>${f4(at(v,K.csus,cp))}</dd>
+      <dt>Kit contribution</dt><dd><b>${f4(at(v,K.ckit,cp))}</b> <span class="note">this species minus the same species with no kit</span></dd></dl>
+     <dl class="kv"><dt>Healing</dt><dd>${f4(v[K.heal])} of max HP per turn${v[K.hasRec]?' <span class="note">reliable recovery</span>':''}</dd>
+      <dt>Hazard chip</dt><dd>${v[K.nHaz]?f4(v[K.hazChip])+' from '+v[K.nHaz]+' hazard move'+(v[K.nHaz]>1?'s':''):'none'}</dd>
+      <dt>Screens</dt><dd>${v[K.hasScr]?'yes — incoming cut 33%':'none'}</dd></dl>
+    </div>
+    <p class="note">Sustain is the turn dimension the damage axes cannot see. The axis is the <b>kit delta</b>, not raw depth: raw depth correlated 0.81 with BST and measured size rather than kit. Simplified — no PP, no AI switching, no boss healing, no crits; Toxic is flat chip.</p>
+    <h3>Role fits</h3><div class="cols">${fits.map(([n,f],i)=>`<div><b>${nicheName(n)}</b> ${f4(f)}${i===0?` <span class="note">stat ${f4(v[K.S])} · tool ${f4(v[K.T])} · type ${f4(v[K.Y])}</span>`:''}</div>`).join('')||'<div class="note">Fails every archetype gate.</div>'}</div>
+    <p class="note">${v[K.np]} of 21 gates passed. Lineage value ${f4(v[K.lv])}, dead-weight ${f4(v[K.ldw])}. Confidence ${v[K.conf]}; reached by ${esc(v[K.ab])}.${v[K.cm]?' <b class="warn">Can\'t miss.</b>':''}</p>
+    <h3>Ceiling build</h3><dl class="kv"><dt>Nature</dt><dd>${v[K.cnat]}</dd><dt>EVs</dt><dd>${v[K.cevs]}, 31 IVs</dd><dt>Ability</dt><dd>${v[K.cab]}${v[K.cab]!==v[K.fab]?` <span class="note">(floor uses ${v[K.fab]})</span>`:''}</dd></dl>
+    <h3>Every checkpoint</h3><div style="overflow:auto"><table><thead><tr><th>cp</th><th class="n">cap</th><th>role</th><th class="n">floor</th><th class="n">ceiling</th><th class="n">VORP</th><th>item</th></tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+  }
+  return `<button class="back" data-back>‹ Back to the survey</button>
+  <div class="doss"><span class="note">#${String(sp[F.dex]).padStart(3,'0')} · ${sp[F.ftype]} form · stage ${sp[F.stage]}${flagsTxt?' · '+flagsTxt:''}</span>
+  <div class="hero">${art(sp,'art')}<div><h2>${disp(sp)}</h2></div></div>
+  <div class="lead">${tys.map(tyTag).join('')}${tierTag(v)}${v?`<span class="big">${f4(v[K.v])}</span><span class="note">mean value</span>`:''}<span class="note">BST ${bst(sp)}</span><button class="small" data-add="${sp[0]}">${S.party.includes(sp[0])?'remove from party':'add to party'}</button></div>
+  ${cpToggle('Show this species at')}
+  <div class="cols">
+   <div>${signature(sp)}<h3>Abilities</h3><div>${sp[F.ab].filter(Boolean).map((a,i)=>`${i===2?'<span class="note">hidden</span> ':''}${a}`).join(' · ')||'—'}</div></div>
+   <div><h3>Base stats</h3>${stats}<h3>Damage taken by attacking type</h3><div class="mx">${mx}</div></div>
+  </div>
+  <p class="note">Art: ${spriteSrc(sp)[1]}${(sp[F.ftype]==='mega'||sp[F.ftype]==='gigantamax')&&spriteSrc(sp)[1]!=='exact'?' — no art exists for this form; the base species is shown':''}. ${SPR?'':'Sprite file not found beside this page; falling back to PokeAPI over the network.'}</p>
+  <h3>Line</h3><div>${lin}</div><div class="note" style="margin-top:4px">${from?`Evolves from <a href="#" data-sel="${from[0]}">${from[F.name]}</a>. `:''}${into?'Evolves into '+into+'.':''}</div>
+  <h3>Performance</h3>${analysis}
+  <h3>Moves</h3>${legend}
+  ${v&&usedC.size?`<p class="note">At ${cpName(cp)} the ceiling build's attacks were ${[...usedC].sort((a,b)=>b[1]-a[1]).map(([m,n])=>`<b style="color:var(--brass-lt)">${MV[m][0]}</b> (${n})`).join(', ')}. The scorer keeps the strongest move of each type and category and takes the best one per boss slot, so a weaker same-type move is never the pick.</p>`:''}
+  <h4 class="note" style="margin:12px 0 4px">Level-up, learned by cap ${lc}</h4><div>${learned.map(([m,l])=>chip(m,' · L'+l)).join('')||'<span class="note">none</span>'}</div>
+  ${later.length?`<h4 class="note" style="margin:12px 0 4px">Level-up, after the cap</h4><div>${later.map(([m,l])=>chip(m,' · L'+l)).join('')}</div>`:''}
+  <h4 class="note" style="margin:12px 0 4px">TMs <span class="note">(faded: not obtainable yet)</span></h4><div>${tms.map(([id,g])=>chip(id,g<90?' · cp'+g:'',g>cp?' gated':'')).join('')||'<span class="note">none</span>'}</div>
+  <h3>Where to get it</h3>${av?`<table><thead><tr><th>location</th><th>method</th><th>level</th><th>rate</th></tr></thead><tbody>${av}</tbody></table>`:'<p class="note">No direct acquisition record in any source.</p>'}
+  </div>`;
+}
+
+// ---------- RANKINGS ----------
+function tierNow(x){for(const [t,lo] of D.th)if(x/10000>=lo/100)return t;return 'F';}
+function rRank(){
+  const roles=['',...[...new Set(Object.values(VAL).map(v=>nicheName(v[K.n])))].filter(r=>r!=='no role').sort()];
+  const rows=SP.filter(sp=>val(sp)&&inPool(sp,S.cp)&&(!S.rankRole||nicheName(at(val(sp),K.cn,S.cp))===S.rankRole)).map(sp=>[sp,val(sp),at(val(sp),K.cvo,S.cp)]).sort((a,b)=>(b[2]??-1e9)-(a[2]??-1e9));
+  let out=`<h2 style="font-size:32px">Rankings</h2>${cpToggle('Ranked at')}<p class="note">Ordered by VORP at this checkpoint: ceiling value minus the third-best zero-investment species in the same role. Tier badges use <b>mean</b> VORP across the whole run — S+ ≥ .20, S ≥ .14, A ≥ .09, B ≥ .04, C ≥ 0, D ≥ −.06 — so a species can top a single checkpoint while carrying a lower tier.</p><div class="chips">${roles.map(r=>`<span class="chip" data-role="${r}" aria-pressed="${S.rankRole===r}">${r||'all roles'}</span>`).join('')}</div>`;
+  let band=null;out+='<table><thead><tr><th>#</th><th>species</th><th>types</th><th>role here</th><th class="n">value</th><th class="n">VORP here</th><th class="n">mean VORP</th><th>tier</th></tr></thead><tbody>';
+  rows.forEach(([sp,v,vo],i)=>{const t=tierNow(vo);if(t!==band){band=t;out+=`<tr><td colspan="8"><div class="band" style="background:${{Sp:'var(--brass-lt)',S:'var(--verd)',A:'#8DB7C9',B:'var(--paper2)',C:'#9AA79F',D:'#5E6C66',F:'#3C4944'}[tierCls(t)]}">${t} here<span>${rows.filter(r=>tierNow(r[2])===t).length}</span></div></td></tr>`;}
+   out+=`<tr class="clk" data-sel="${sp[0]}"><td class="n">${i+1}</td><td>${sp[F.name]}${v[K.cm]?' <span class="warn">!</span>':''}</td><td>${types(sp).map(tyTag).join(' ')}</td><td>${nicheName(at(v,K.cn,S.cp))}</td><td class="n">${f4(at(v,K.cv,S.cp))}</td><td class="n">${sg(vo)}</td><td class="n">${sg(v[K.vo])}</td><td>${tierTag(v)}</td></tr>`;});
+  return out+'</tbody></table>';
+}
+// ---------- ROLES ----------
+function rRoles(){
+  const names=NICHE.map((n,i)=>[i,n]).filter(([i,n])=>n!=='NONE'&&Object.values(VAL).some(v=>v[K.cn].includes(i)));
+  const [ri]=names[S.roleTab]||names[0];
+  const rows=SP.filter(sp=>val(sp)&&inPool(sp,S.cp)&&at(val(sp),K.cn,S.cp)===ri).map(sp=>[sp,val(sp),at(val(sp),K.cvo,S.cp)]).sort((a,b)=>(b[2]??-1e9)-(a[2]??-1e9));
+  return `<h2 style="font-size:32px">Roles</h2>${cpToggle('At')}<div class="chips">${names.map(([i,n],k)=>`<span class="chip" data-roletab="${k}" aria-pressed="${k===(S.roleTab||0)}">${n.replace(/_/g,' ')}</span>`).join('')}</div>
+  <p class="note">Species whose best-fit archetype at this checkpoint is ${nicheName(ri)}. Gates come before scores: a wall without recovery is not a wall.</p>
+  <table><thead><tr><th>#</th><th>species</th><th>types</th><th class="n">fit</th><th class="n">value</th><th class="n">VORP</th><th class="n">BST</th><th>tier</th></tr></thead><tbody>${rows.map(([sp,v,vo],i)=>`<tr class="clk" data-sel="${sp[0]}"><td class="n">${i+1}</td><td>${sp[F.name]}</td><td>${types(sp).map(tyTag).join(' ')}</td><td class="n">${f4(v[K.nf])}</td><td class="n">${f4(at(v,K.cv,S.cp))}</td><td class="n">${sg(vo)}</td><td class="n">${bst(sp)}</td><td>${tierTag(v)}</td></tr>`).join('')||'<tr><td colspan="8" class="empty">No species fills this role yet.</td></tr>'}</tbody></table>`;
+}
+// ---------- BOSSES ----------
+function dmg(sp,cp){const lc=cap(cp);return [...new Set(sp[F.lvl].filter(([,l])=>l<=lc).map(([m])=>m))].map(i=>MV[i]).filter(m=>m&&m[2]!=='-'&&m[3]>0);}
+const findSp=n=>byName.get(n)||[...byName.values()].sort((a,b)=>a[0]-b[0]).find(x=>x[1].startsWith(n));
+function rBoss(){
+  const anchors=new Set(CPS.flatMap(c=>c[3]));const tr=TRS.find(t=>t[0]===S.trainer);
+  let body='<p class="empty">Choose a fight. ★ marks the nineteen checkpoint anchors, where every species carries real damage-calc scores against that exact roster.</p>';
+  if(tr){const cpOf=CPS.find(c=>c[3].includes(tr[0]));const cp=cpOf?cpOf[0]:S.cp;const isA=!!cpOf;
+   const rt=tr[6].map(s=>{const x=findSp(s[0]);return x?types(x):[];});
+   const atk=new Set(tr[6].flatMap(s=>s[4].map(m=>{const x=Object.values(MV).find(q=>q[0]===m);return x&&x[2]!=='-'?x[1]:null;}).filter(Boolean)));
+   const cand=SP.filter(sp=>val(sp)&&inPool(sp,cp)).map(sp=>{const v=val(sp),mine=dmg(sp,cp),ty=types(sp);const off=rt.map(r=>r.length?Math.max(0,...mine.map(m=>eff(m[1],r)*(ty.includes(m[1])?1.5:1))):1);const o=off.reduce((a,b)=>a+b,0)/Math.max(1,off.length);const inc=[...atk].map(t=>eff(t,ty));const ic=inc.length?inc.reduce((a,b)=>a+b,0)/inc.length:1;const sc=isA?(at(v,K.cv,cp)/10000):(o/3-(ic-1)*.5+.3*(at(v,K.cv,cp)??0)/10000);return [sp,v,o,ic,sc];}).sort((a,b)=>b[4]-a[4]).slice(0,30);
+   body=`<div class="cols"><div><h3>${tr[1]} — ${tr[2]}${isA?` · anchor for ${cpName(cp)}, cap ${cap(cp)}`:` · scored at the ${cpName(cp)} pool`}</h3><p class="note">${tr[3]==='fixed'?'Fixed levels '+tr[4]+'–'+tr[5]:'Scales to your party'}</p>
+   <table><thead><tr><th>species</th><th>lv</th><th>item</th><th>moves</th></tr></thead><tbody>${tr[6].map(s=>{const bsp=findSp(s[0]);return `<tr><td>${bsp?art(bsp,'rostart'):''}${s[0]}${s[5]?' <span class="warn">mega</span>':''}<br><span class="note">${s[3]}</span></td><td>${s[1]||'scales'}</td><td class="note">${s[2]||'—'}</td><td>${s[4].map(m=>{const x=Object.values(MV).find(q=>q[0]===m);return `<span class="mv" style="border-left-color:${x?TYPECOL[x[1]]:'#666'}">${m}</span>`;}).join('')}</td></tr>`;}).join('')}</tbody></table><p class="note">Attacks with: ${[...atk].map(tyTag).join(' ')}</p></div>
+   <div><h3>What to bring</h3><p class="note">${isA?'Ranked on the real checkpoint value against exactly this roster.':'Type math only — no per-roster damage rolls exist for this fight. STAB-weighted best hit per slot, minus incoming weakness, plus value. A shortlist, not a verdict.'}</p>
+   <table><thead><tr><th>#</th><th>species</th><th>types</th>${isA?'<th class="n">value</th>':'<th class="n">hits</th><th class="n">takes</th>'}<th>tier</th><th></th></tr></thead><tbody>${cand.map(([sp,v,o,ic,sc],k)=>`<tr class="clk" data-sel="${sp[0]}"><td class="n">${k+1}</td><td>${sp[F.name]}</td><td>${types(sp).map(tyTag).join(' ')}</td>${isA?`<td class="n">${sc.toFixed(3)}</td>`:`<td class="n">${o.toFixed(2)}×</td><td class="n ${ic>1?'bad':ic<1?'ok':''}">${ic.toFixed(2)}×</td>`}<td>${tierTag(v)}</td><td><button class="small" data-add="${sp[0]}">${S.party.includes(sp[0])?'−':'+'}</button></td></tr>`).join('')}</tbody></table></div></div>`;}
+  return `<h2 style="font-size:32px">Bosses</h2><div class="filters"><select data-tr><option value="">Choose a fight</option>${TRS.map(t=>`<option value="${t[0]}" ${t[0]===S.trainer?'selected':''}>${t[2]} · ${t[1]}${anchors.has(t[0])?' ★':''}</option>`).join('')}</select></div>${body}`;
+}
+// ---------- PARTY ----------
+function rParty(){
+  const cp=S.cp,mem=S.party.map(i=>byIdx.get(i)).filter(Boolean);
+  const slots=Array.from({length:6},(_,i)=>{const sp=mem[i];return sp?`<div class="slot filled"><b>${sp[F.name]}</b> ${tierTag(val(sp))}<div>${types(sp).map(tyTag).join(' ')}</div><button class="small" data-add="${sp[0]}" style="margin-top:6px">remove</button></div>`:`<div class="slot note">empty</div>`;}).join('');
+  const cov=TY.map(t=>{let b=0;for(const sp of mem)for(const m of dmg(sp,cp))b=Math.max(b,CH[TI[m[1]]][TI[t]]*(types(sp).includes(m[1])?1.5:1));return [t,b];});
+  const def=TY.map(t=>[t,mem.filter(sp=>eff(t,types(sp))>1).length,mem.filter(sp=>eff(t,types(sp))<1).length]);
+  const roster=[...new Set(TRS.filter(t=>CPS[cp-1][3].includes(t[0])).flatMap(t=>t[6].map(s=>s[0])))];
+  const vs=roster.map(n=>{const b=findSp(n);if(!b)return [n,null,''];let best=0,who='';for(const sp of mem)for(const m of dmg(sp,cp)){const e=eff(m[1],types(b))*(types(sp).includes(m[1])?1.5:1);if(e>best){best=e;who=sp[F.name]+' '+m[0];}}return [n,best,who,types(b)];});
+  const gaps=cov.filter(([,b])=>b<2).map(([t])=>t);
+  return `<h2 style="font-size:32px">Party</h2>${cpToggle('Checked at')}<p class="note">Up to six. Add from any species page or the boss lists. Type math uses level-up moves by cap ${cap(cp)} with STAB; TMs are not assumed. Party clears on reload.</p><div class="party">${slots}</div>
+  ${mem.length?`<h3>Best hit on each defending type</h3><div class="cov">${cov.map(([t,b])=>`<div class="${b>=2?'ok':b<1?'bad':''}" style="border-top:2px solid ${TYPECOL[t]}">${t.slice(0,3)}<br>${b?b.toFixed(b%1?1:0)+'×':'0'}</div>`).join('')}</div><p class="note">${gaps.length?'No super-effective hit on: <b>'+gaps.join(', ')+'</b>.':'Every type is covered.'}</p>
+  <h3>Members weak / resistant to each attacking type</h3><div class="cov">${def.map(([t,w,r])=>`<div class="${w>=3?'bad':w===0&&r>0?'ok':''}" style="border-top:2px solid ${TYPECOL[t]}">${t.slice(0,3)}<br>${w}w ${r}r</div>`).join('')}</div>
+  <h3>Against the ${cpName(cp)} roster</h3><table><thead><tr><th>boss slot</th><th>types</th><th class="n">best hit</th><th>from</th></tr></thead><tbody>${vs.map(([n,b,who,ty])=>`<tr><td>${n}</td><td>${(ty||[]).map(tyTag).join(' ')}</td><td class="n ${b>=2?'ok':b!=null&&b<1?'bad':''}">${b==null?'—':b+'×'}</td><td class="note">${who||'nothing damaging'}</td></tr>`).join('')}</tbody></table>`:''}`;
+}
+function rAbout(){return `<div style="max-width:70ch"><h2 style="font-size:32px">About</h2><p>Built 2026-09-02 from the Emerald Imperium v1.3 analysis bundle, Phases 1–5. 1,534 forms, 1,311 scored, 164 trainers. Damage engine: RadicalRedShowdown/damage-calc at 7f35400 on a custom Imperium data layer, generation 9 pinned on evidence but unconfirmed — every damage figure is Inferred.</p>
+<h3>Reading a species page</h3><p>Value is a composite scored against the boss roster at each of nineteen level caps: offense from damage rolls (.26), defense (.15), sustain (.16, or .24 for defensive roles), speed (.12, or .04), utility (.10), typing against that boss (.11), archetype fit (.10). Floor is zero investment. Ceiling is the best build using only what is obtainable by that checkpoint. VORP subtracts the third-best floor in the same role. Tier is on mean VORP; a dashed badge is a species within 0.002 of a threshold.</p>
+<h3>Sprites</h3><p>Species art comes from the Radical Red dex sprite set (ydarissep/JwowSquared.github.io), 64×64, re-encoded as lossless WebP into <code>emerald_imperium_sprites.js</code>, which must sit beside this file. Only the sprites are taken from that project — none of its species, cap or location data. 1,183 forms match by ROM label; cosmetic and totem forms show the nearest form of the same species; the nine Imperium-only megas have no art anywhere and show their base species. If the sprite file is absent, PokeAPI national-dex sprites load over the network for base forms.</p><h3>Sustain</h3><p>A sixth axis added after the five single-hit ones proved unable to see stalling, healing or hazard setting. It runs the roster sequentially on one lifebar with per-turn recovery, hazard and Toxic chip, and screens, resetting at each trainer. The axis is the difference between the species with its kit and the identical species without, because raw sweep depth correlated 0.81 with BST. Defensive roles also weight sustain 0.24 and speed 0.04, and the ceiling is the better of an offensive and a defensive EV spread.</p><h3>Known limits</h3><p>Rivalry and Cute Charm assume same gender on 20 species, because gender ratio is in no Imperium source. Weight is 50 kg for everything. Move priority is absent. Checkpoint 2 is scored against a merged rival block. 223 forms have no derivable acquisition route and are unscored. The ceiling picks physical or special from Atk ≥ SpA, which builds walls like Toxapex as attackers — shown faithfully.</p></div>`;}
+boot();
+</script>
+</body>
+</html>
+<!--EOF-->
